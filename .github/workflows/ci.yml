@@ -15,8 +15,12 @@ permissions:
 
 jobs:
   validate:
-    name: Validate & test
-    runs-on: ubuntu-latest
+    name: Validate & test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -51,3 +55,6 @@ jobs:
 
       - name: Test
         run: bun run --filter leadtype test
+
+      - name: Check for lockfile drift
+        run: git diff --exit-code -- docs/paths.lock.json
