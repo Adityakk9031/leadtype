@@ -266,6 +266,7 @@ describe("resolveInclude CRLF normalization", () => {
 
     expect(result.kind).toBe("markdown");
     expect(result.content).not.toContain("\r");
+    expect(result.content).toBe("# Heading\n\nParagraph.\n");
   });
 
   it("normalizes CRLF in cached async markdown reads", async () => {
@@ -281,7 +282,8 @@ describe("resolveInclude CRLF normalization", () => {
     });
 
     expect(first.content).not.toContain("\r");
-    expect(second.content).not.toContain("\r");
+    expect(first.content).toBe("# Heading\n\nParagraph.\n");
+    expect(second.content).toBe(first.content);
     expect(cache.stats.rawFileReads).toBe(1);
     expect(cache.stats.rawFileHits).toBe(1);
   });
@@ -297,5 +299,29 @@ describe("resolveInclude CRLF normalization", () => {
 
     expect(result.kind).toBe("code");
     expect(result.content).not.toContain("\r");
+    expect(result.content).toBe("const x = 1;\nconst y = 2;\n");
+  });
+
+  it("normalizes CRLF in synchronous include reads via remarkInclude plugin", async () => {
+    const partialPath = path.join(root, "snippet.ts");
+    await writeFile(
+      partialPath,
+      Buffer.from("const a = 1;\r\nconst b = 2;\r\n")
+    );
+    const mainPath = path.join(root, "main.mdx");
+    const transforms = createMdastTransforms([remarkInclude]);
+
+    const ast = mdxToMdast('<include src="./snippet.ts" />', {
+      features: { frontmatter: false, gfm: true },
+    }) as Root;
+    await runMdastTransforms(ast, transforms, {
+      filePath: mainPath,
+      value: '<include src="./snippet.ts" />',
+    });
+
+    const codeNode = ast.children[0] as { type: string; value: string };
+    expect(codeNode.type).toBe("code");
+    expect(codeNode.value).not.toContain("\r");
+    expect(codeNode.value).toBe("const a = 1;\nconst b = 2;\n");
   });
 });
