@@ -117,7 +117,9 @@ async function resolveBody(
   }
   if (skill.bodyPath) {
     const base = srcDir ? path.resolve(srcDir) : process.cwd();
-    return await readFile(path.resolve(base, skill.bodyPath), "utf8");
+    return (
+      await readFile(path.resolve(base, skill.bodyPath), "utf8")
+    ).replaceAll("\r\n", "\n");
   }
   return `# ${skill.name}\n\n${skill.description}\n`;
 }

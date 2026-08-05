@@ -641,7 +641,9 @@ describe("convertMdxFile", () => {
     // Write CRLF content as a Buffer so writeFile does not re-encode it
     await writeFile(
       filePath,
-      Buffer.from("---\r\ntitle: CRLF Page\r\n---\r\n\r\n# Heading\r\n\r\n```ts\r\nconst x = 1;\r\nconst y = 2;\r\n```\r\n")
+      Buffer.from(
+        "---\r\ntitle: CRLF Page\r\n---\r\n\r\n# Heading\r\n\r\n```ts\r\nconst x = 1;\r\nconst y = 2;\r\n```\r\n"
+      )
     );
 
     let capturedRaw: string | undefined;

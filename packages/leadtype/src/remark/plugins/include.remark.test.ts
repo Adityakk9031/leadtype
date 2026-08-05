@@ -245,3 +245,57 @@ describe("extractMdxSection", () => {
     expect(extracted?.children).toEqual([heading]);
   });
 });
+
+describe("resolveInclude CRLF normalization", () => {
+  let root: string;
+
+  beforeEach(async () => {
+    root = await mkdtemp(path.join(tmpdir(), "leadtype-include-crlf-"));
+  });
+
+  afterEach(async () => {
+    await rm(root, { force: true, recursive: true });
+  });
+
+  it("normalizes CRLF in uncached async markdown reads", async () => {
+    const filePath = path.join(root, "partial.mdx");
+    // Use Buffer.from so core.autocrlf cannot neutralize the fixture
+    await writeFile(filePath, Buffer.from("# Heading\r\n\r\nParagraph.\r\n"));
+
+    const result = await resolveInclude("partial.mdx", { fromDir: root });
+
+    expect(result.kind).toBe("markdown");
+    expect(result.content).not.toContain("\r");
+  });
+
+  it("normalizes CRLF in cached async markdown reads", async () => {
+    const filePath = path.join(root, "partial.mdx");
+    await writeFile(filePath, Buffer.from("# Heading\r\n\r\nParagraph.\r\n"));
+    const cache = createIncludeResolutionCache();
+
+    // First call populates the cache, second call hits it
+    const first = await resolveInclude("partial.mdx", { fromDir: root, cache });
+    const second = await resolveInclude("partial.mdx", {
+      fromDir: root,
+      cache,
+    });
+
+    expect(first.content).not.toContain("\r");
+    expect(second.content).not.toContain("\r");
+    expect(cache.stats.rawFileReads).toBe(1);
+    expect(cache.stats.rawFileHits).toBe(1);
+  });
+
+  it("normalizes CRLF in code-kind includes (no parser layer)", async () => {
+    const filePath = path.join(root, "snippet.ts");
+    // CR bytes survive without a parser on the code-kind path — this is the
+    // highest-risk path because resolution.content is assigned verbatim onto a
+    // code node value.
+    await writeFile(filePath, Buffer.from("const x = 1;\r\nconst y = 2;\r\n"));
+
+    const result = await resolveInclude("snippet.ts", { fromDir: root });
+
+    expect(result.kind).toBe("code");
+    expect(result.content).not.toContain("\r");
+  });
+});
