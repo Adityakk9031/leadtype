@@ -7,11 +7,11 @@
     },
     {
       "path": "/changelog/0-3",
-      "hash": "0bc8f42ca488bcc3"
+      "hash": "441979577446e636"
     },
     {
       "path": "/changelog/0-4",
-      "hash": "d4f62f5d052d03b9"
+      "hash": "23f03ad55437bda4"
     },
     {
       "path": "/docs",
@@ -19,11 +19,11 @@
     },
     {
       "path": "/docs/aeo/generate-artifacts-without-docs",
-      "hash": "cf7bdaabd7e76f12"
+      "hash": "aef74f387729fb27"
     },
     {
       "path": "/docs/aeo/optimize-docs-for-agents",
-      "hash": "dca74434a36cf201"
+      "hash": "f06974bfbbe12a5c"
     },
     {
       "path": "/docs/aeo/overview",
@@ -31,7 +31,7 @@
     },
     {
       "path": "/docs/aeo/serve-agent-responses",
-      "hash": "dfa7d2699fac1620"
+      "hash": "a07fb930213e393c"
     },
     {
       "path": "/docs/concepts/architecture",
@@ -39,11 +39,11 @@
     },
     {
       "path": "/docs/concepts/evals",
-      "hash": "edd981eab8ac4713"
+      "hash": "a2da3f88be4f6dd3"
     },
     {
       "path": "/docs/concepts/methodology",
-      "hash": "a9b988955b176cdc"
+      "hash": "787ee84a03f3541c"
     },
     {
       "path": "/docs/how-it-works",
@@ -51,131 +51,131 @@
     },
     {
       "path": "/docs/integrations/framework-matrix",
-      "hash": "51032d452a2f3da6"
+      "hash": "2ab7e33d4cb8ed99"
     },
     {
       "path": "/docs/integrations/integrate-with-fumadocs",
-      "hash": "8612dd33562bc52e"
+      "hash": "d80047caddd99c81"
     },
     {
       "path": "/docs/package-docs/bundle",
-      "hash": "698c70911f8073f9"
+      "hash": "9299f549e20107bb"
     },
     {
       "path": "/docs/pipeline/agent-setup-prompts",
-      "hash": "3f264ef03502ce04"
+      "hash": "cceb641cc665b311"
     },
     {
       "path": "/docs/pipeline/build-a-docs-site",
-      "hash": "22133fc94a75913b"
+      "hash": "fa37c5640b647f67"
     },
     {
       "path": "/docs/pipeline/collections",
-      "hash": "f83b60ad96ae8270"
+      "hash": "bfa0c797bdb2aeb8"
     },
     {
       "path": "/docs/pipeline/configure-sources",
-      "hash": "9ca3b5069927352e"
+      "hash": "8837f15a670b9403"
     },
     {
       "path": "/docs/pipeline/deploy-generated-artifacts",
-      "hash": "d97d975c9a729257"
+      "hash": "906c5b5e81691a10"
     },
     {
       "path": "/docs/pipeline/generate-rss-atom-feeds",
-      "hash": "fecd924530c4f314"
+      "hash": "c4646bb46b112921"
     },
     {
       "path": "/docs/pipeline/generate-static-artifacts",
-      "hash": "f1fb72bcad6ccd30"
+      "hash": "078a0e5fcf0c0106"
     },
     {
       "path": "/docs/pipeline/localize-docs",
-      "hash": "e80d917dbd5b091c"
+      "hash": "9f2448d16b4004c9"
     },
     {
       "path": "/docs/pipeline/redirects",
-      "hash": "0349da74e1d92cd9"
+      "hash": "4b9d528f61a2ef9a"
     },
     {
       "path": "/docs/pipeline/sync-docs-across-repos",
-      "hash": "46313f1179195181"
+      "hash": "8a592c53e647530d"
     },
     {
       "path": "/docs/pipeline/use-the-source-primitive",
-      "hash": "4a39c186f8cbd9a7"
+      "hash": "0749b497916da7c1"
     },
     {
       "path": "/docs/pipeline/validate-in-ci",
-      "hash": "fcc9178672148b4b"
+      "hash": "c8fc71db3c1d438e"
     },
     {
       "path": "/docs/quickstart",
-      "hash": "ce6e181ca6b1c347"
+      "hash": "f4e179d1071a8fed"
     },
     {
       "path": "/docs/reference/cli",
-      "hash": "d90c461c20d1d28c"
+      "hash": "98fe8998d4a118c0"
     },
     {
       "path": "/docs/reference/convert",
-      "hash": "8737e0f4c54191e0"
+      "hash": "47365b8cfe098cc0"
     },
     {
       "path": "/docs/reference/frontmatter-transformers",
-      "hash": "07f54c485cc6bb3d"
+      "hash": "4dabae8605989332"
     },
     {
       "path": "/docs/reference/i18n",
-      "hash": "4a27b63fd0fba41d"
+      "hash": "4da7830eb7985579"
     },
     {
       "path": "/docs/reference/lint",
-      "hash": "1808e01cde497a8c"
+      "hash": "ba0500512a0f949a"
     },
     {
       "path": "/docs/reference/llm",
-      "hash": "456a27c989e3063c"
+      "hash": "de5b0091da60f051"
     },
     {
       "path": "/docs/reference/markdown",
-      "hash": "3d6c0d8a3c17a2b1"
+      "hash": "59ba128434cadfc8"
     },
     {
       "path": "/docs/reference/mcp",
-      "hash": "cef9633a4e1af496"
+      "hash": "a72d14501299b62d"
     },
     {
       "path": "/docs/reference/mdx",
-      "hash": "06ace94ba8c664b8"
+      "hash": "55cc8ebbecb394a5"
     },
     {
       "path": "/docs/reference/nlweb",
-      "hash": "1f29be5925a54c69"
+      "hash": "0fbed5095026565d"
     },
     {
       "path": "/docs/reference/openapi",
-      "hash": "b196fb881f1b463e"
+      "hash": "a90449172a503ec5"
     },
     {
       "path": "/docs/reference/search",
-      "hash": "6ed88e8bc7c65a4f"
+      "hash": "cab9b3b09ae10040"
     },
     {
       "path": "/docs/reference/skills",
-      "hash": "4d638061dd7c314d"
+      "hash": "8bb150e1714775e9"
     },
     {
       "path": "/docs/reference/source",
-      "hash": "5947f52e41291c52"
+      "hash": "3d755d399adcbd60"
     },
     {
       "path": "/docs/reference/troubleshooting",
-      "hash": "f2068e81bdb886b7"
+      "hash": "b5bb8c5d90b5deb3"
     },
     {
       "path": "/docs/reference/webmcp",
-      "hash": "05a752a188c192e7"
+      "hash": "4d7394bddffbba76"
     },
     {
       "path": "/docs/rest-api",
@@ -191,23 +191,23 @@
     },
     {
       "path": "/docs/search/add-search",
-      "hash": "eab5404f95aafe0c"
+      "hash": "7fc9d787962490fd"
     },
     {
       "path": "/docs/search/agent-tools",
-      "hash": "b7db77fd9446038c"
+      "hash": "bdcce578592a10f3"
     },
     {
       "path": "/docs/search/ai-answers",
-      "hash": "482374dc9bb386e6"
+      "hash": "7775f7a22a192752"
     },
     {
       "path": "/docs/writing/components",
-      "hash": "dee30995d90b6293"
+      "hash": "7453c861ff4d95d3"
     },
     {
       "path": "/docs/writing/frontmatter",
-      "hash": "eb6e2658bf58eb57"
+      "hash": "e7043b60227d4bc4"
     },
     {
       "path": "/docs/writing/write-for-agents",
