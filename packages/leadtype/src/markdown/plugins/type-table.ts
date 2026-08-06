@@ -262,7 +262,10 @@ export function resolveDefaultTypeTableBasePath(sourcePath?: string): string {
   const segments = normalizedPath.split("/");
   const docsIndex = segments.indexOf(DEFAULT_DOCS_DIR);
   if (docsIndex > 0) {
-    return normalize(segments.slice(0, docsIndex).join("/") || "/");
+    return normalize(segments.slice(0, docsIndex).join("/") || "/").replaceAll(
+      "\\",
+      "/"
+    );
   }
 
   return process.cwd();
