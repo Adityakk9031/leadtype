@@ -191,7 +191,7 @@ describe("core/adapter boundary", () => {
   }
 
   function relative(file: string): string {
-    return path.relative(srcRoot, file);
+    return path.relative(srcRoot, file).replaceAll("\\", "/");
   }
 
   function isAdapterFile(relativePath: string): boolean {
