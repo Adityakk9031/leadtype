@@ -2,11 +2,7 @@
 "leadtype": patch
 ---
 
-Normalize CRLF line endings at every read site so emitted `.md` mirrors and `paths.lock.json` hashes are byte-identical on Windows and Linux.
+Fix Windows builds and cross-platform output determinism.
 
-Previously, source files checked out with `\r\n` line endings (common on Windows) caused `\r` bytes to survive into fenced code blocks and included file content, making `hashRedirectContent` values platform-dependent and causing `paths.lock.json` to drift between contributors.
-
-**Affected read sites:**
-- `convert.ts` — primary MDX source read (`convertMdxFile` / `convertAllMdx` / `createDocsSource`)
-- `include.remark.ts` — `<include>` partial reads (uncached async, cached async, and synchronous)
-- `llm/skills.ts` — skill `bodyPath` reads (affects `SKILL.md` `integrity`/`digest` hashes)
+- Rollup build: classify module ids as external with `path.isAbsolute` so resolved ids (e.g. `D:/…/src/i18n/index.ts`) are treated as internal on Windows, fixing `"../i18n" is imported as an external by "src/feed/index.ts"` build failures.
+- Normalize CRLF line endings at content read sites so emitted `.md` mirrors and content hashes are byte-identical across platforms: `convert.ts` MDX source reads, `include.remark.ts` `<include>` partial reads, and `llm/skills.ts` skill body resolution (affects `SKILL.md` `integrity`/`digest` for bodies containing `\r\n`).
