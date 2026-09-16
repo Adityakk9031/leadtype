@@ -1,8 +1,8 @@
 import {
   type DocsPathMount,
-  matchesUrlPrefix,
   normalizeDocsPath,
   normalizeUrlPrefix,
+  resolveDocsUrlPrefix,
   stripDocsExtension,
   toDocsUrlPath,
 } from "../internal/docs-url";
@@ -224,14 +224,9 @@ export function toLocalizedDocsUrlPath(
     return basePath;
   }
 
-  const matchedMount = [...(mounts ?? [{ pathPrefix: "", urlPrefix: "/docs" }])]
-    .map((mount) => normalizeUrlPrefix(mount.urlPrefix))
-    .sort((left, right) => right.length - left.length)
-    .find((urlPrefix) => matchesUrlPrefix(basePath, urlPrefix));
-  const urlPrefix = matchedMount ?? "/docs";
+  const urlPrefix = resolveDocsUrlPrefix(relativePath, mounts);
   if (urlPrefix === "/") {
-    const suffix = basePath === "/" ? "" : basePath;
-    return `/${locale}${suffix}`;
+    return basePath === "/" ? `/${locale}` : `/${locale}${basePath}`;
   }
   const suffix = basePath === urlPrefix ? "" : basePath.slice(urlPrefix.length);
   return `${urlPrefix}/${locale}${suffix}`;

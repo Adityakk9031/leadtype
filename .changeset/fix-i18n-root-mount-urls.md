@@ -1,4 +1,4 @@
-﻿---
+---
 "leadtype": patch
 ---
 
