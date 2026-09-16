@@ -2014,6 +2014,11 @@ async function executeGenerate(
         product: effectiveProduct,
         groups,
         nav: effectiveNav,
+        mounts: effectiveMounts,
+        docsSubdir:
+          normalizeDocsPath(
+            path.relative(sourceMirror.srcDir, sourceMirror.docsDir)
+          ) || DOCS_DIRNAME,
         i18n: metadata.i18n,
         locale: i18n?.defaultLocale,
         transformers: metadata.transformers,

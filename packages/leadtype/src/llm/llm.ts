@@ -3503,6 +3503,7 @@ export type AgentsMdConfig = {
    * Used for the relative-path prefix in every link. Default: `docs`.
    */
   docsSubdir?: string;
+  mounts?: DocsPathMount[];
   i18n?: DocsI18nConfig;
   locale?: LocaleCode;
   transformers?: DocsTransformer[];
@@ -3613,8 +3614,8 @@ export async function generateAgentsMd(
   const sourceDocs = await readSourceDocs(
     srcDir,
     baseUrl,
-    undefined,
-    DOCS_DIRNAME,
+    config.mounts,
+    docsSubdir,
     {
       i18n: config.i18n,
       locale: config.locale,
