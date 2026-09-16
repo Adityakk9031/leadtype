@@ -569,10 +569,7 @@ function collectSectionBlocks(content: string): SectionBlock[] {
   };
 
   const consumeHeading = (title: string, level: number): void => {
-    while (
-      headingStack.length > 0 &&
-      (headingStack[headingStack.length - 1]?.level ?? 0) >= level
-    ) {
+    while ((headingStack.at(-1)?.level ?? 0) >= level) {
       headingStack.pop();
     }
     headingStack.push({ level, title });
@@ -888,8 +885,8 @@ function findDocumentIndex(index: DocsSearchIndex, pathOrId: string): number {
   );
 }
 
-function pathSegments(input?: string): string[] {
-  return (input ?? "").replaceAll("\\", "/").split("/").filter(Boolean);
+function pathSegments(input: string): string[] {
+  return input.replaceAll("\\", "/").split("/").filter(Boolean);
 }
 
 function isSharedRoutePath(input: string): boolean {

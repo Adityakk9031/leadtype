@@ -395,7 +395,10 @@ describe("createDocsSearchIndex and searchDocs", () => {
     expect(h4Result?.headingPath).toEqual(["Starting at H2", "Skipping to H4"]);
 
     const h3Result = searchDocs(index, "Back")[0];
-    expect(h3Result?.headingPath).toEqual(["Starting at H2", "Popping back to H3"]);
+    expect(h3Result?.headingPath).toEqual([
+      "Starting at H2",
+      "Popping back to H3",
+    ]);
 
     const serialized = JSON.stringify(index);
     const parsed = JSON.parse(serialized);
