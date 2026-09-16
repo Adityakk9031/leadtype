@@ -46,6 +46,7 @@ const SOURCE_CONFIG_INHERIT_FIELDS = new Set<SourceConfigInheritField>([
   "groups",
   "frontmatterSchema",
   "flatteners",
+  "mounts",
 ]);
 
 const DEFAULT_SOURCE_CONFIG_INHERIT: SourceConfigInheritField[] = [

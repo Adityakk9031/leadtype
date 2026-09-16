@@ -581,4 +581,52 @@ describe("agents.nlweb.openapi config validation", () => {
       )
     ).not.toThrow();
   });
+
+  it("accepts valid collection inheritConfig fields including mounts and rejects invalid ones", () => {
+    expect(() =>
+      validateDocsConfig(
+        {
+          product: { name: "Leadtype", tagline: "Docs pipeline." },
+          collections: {
+            guides: {
+              dir: "docs",
+              repository: "https://github.com/acme/acme.git",
+              ref: "main",
+              inheritConfig: {
+                inherit: [
+                  "navigation",
+                  "groups",
+                  "frontmatterSchema",
+                  "flatteners",
+                  "mounts",
+                ],
+              },
+            },
+          },
+        },
+        CONFIG_PATH
+      )
+    ).not.toThrow();
+
+    expect(() =>
+      validateDocsConfig(
+        {
+          product: { name: "Leadtype", tagline: "Docs pipeline." },
+          collections: {
+            guides: {
+              dir: "docs",
+              repository: "https://github.com/acme/acme.git",
+              ref: "main",
+              inheritConfig: {
+                inherit: ["invalidField"],
+              },
+            },
+          },
+        },
+        CONFIG_PATH
+      )
+    ).toThrow(
+      /collection "guides" inheritConfig\.inherit contains unsupported field "invalidField"/
+    );
+  });
 });
