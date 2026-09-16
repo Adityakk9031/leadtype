@@ -650,7 +650,7 @@ describe("generateAgentsMd", () => {
     expect(agents).toContain("](./docs/quickstart.md)");
   });
 
-  it("resolves mounted links and custom docsSubdir in AGENTS.md", async () => {
+  it("resolves mounted links and custom docsDirName in AGENTS.md", async () => {
     const projectDir = await createTempProject();
     const outDir = path.join(projectDir, "out");
     const customDocsDir = path.join(projectDir, "content");
@@ -664,7 +664,7 @@ describe("generateAgentsMd", () => {
     await generateAgentsMd({
       srcDir: projectDir,
       outDir,
-      docsSubdir: "content",
+      docsDirName: "content",
       mounts: [{ pathPrefix: "", urlPrefix: "/changelog" }],
       product: {
         name: "TestProduct",
@@ -675,9 +675,7 @@ describe("generateAgentsMd", () => {
 
     const agents = await readFile(path.join(outDir, "AGENTS.md"), "utf8");
     expect(agents).toContain("## Best Starting Points");
-    expect(agents).toContain(
-      "- [Changelog](./content/index.md): Latest updates."
-    );
+    expect(agents).toContain("- [Changelog](./docs/index.md): Latest updates.");
   });
 });
 
