@@ -1,5 +1,6 @@
 import {
   type DocsPathMount,
+  matchesUrlPrefix,
   normalizeDocsPath,
   normalizeUrlPrefix,
   stripDocsExtension,
@@ -148,7 +149,7 @@ export function getDocsLocaleUrlPrefix(
   if (!normalized || locale === normalized.defaultLocale) {
     return prefix;
   }
-  return `${prefix}/${locale}`;
+  return prefix === "/" ? `/${locale}` : `${prefix}/${locale}`;
 }
 
 function splitUrlPath(pathname: string): string[] {
@@ -226,11 +227,12 @@ export function toLocalizedDocsUrlPath(
   const matchedMount = [...(mounts ?? [{ pathPrefix: "", urlPrefix: "/docs" }])]
     .map((mount) => normalizeUrlPrefix(mount.urlPrefix))
     .sort((left, right) => right.length - left.length)
-    .find(
-      (urlPrefix) =>
-        basePath === urlPrefix || basePath.startsWith(`${urlPrefix}/`)
-    );
+    .find((urlPrefix) => matchesUrlPrefix(basePath, urlPrefix));
   const urlPrefix = matchedMount ?? "/docs";
+  if (urlPrefix === "/") {
+    const suffix = basePath === "/" ? "" : basePath;
+    return `/${locale}${suffix}`;
+  }
   const suffix = basePath === urlPrefix ? "" : basePath.slice(urlPrefix.length);
   return `${urlPrefix}/${locale}${suffix}`;
 }
@@ -248,9 +250,10 @@ export function toLocalizedMarkdownUrlPath(
     i18n,
     mounts
   );
-  return logicalPath === "index" || logicalPath.endsWith("/index")
-    ? `${urlPath}/index.md`
-    : `${urlPath}.md`;
+  if (logicalPath === "index" || logicalPath.endsWith("/index")) {
+    return urlPath === "/" ? "/index.md" : `${urlPath}/index.md`;
+  }
+  return `${urlPath}.md`;
 }
 
 export function logicalPathFromLocaleRelativePath(

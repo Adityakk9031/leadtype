@@ -180,6 +180,9 @@ export function toAbsoluteUrl(urlPath: string, baseUrl: string): string {
 
 /** True when `value` equals `prefix` or nests under it (`<prefix>/...`). */
 export function matchesUrlPrefix(value: string, prefix: string): boolean {
+  if (prefix === "/") {
+    return value === "/" || (value.startsWith("/") && !value.startsWith("//"));
+  }
   return value === prefix || value.startsWith(`${prefix}/`);
 }
 

@@ -82,6 +82,39 @@ describe("i18n helpers", () => {
     ).toBe("/changelog/zh/v1");
   });
 
+  it("resolves localized docs and markdown urls for root mount", () => {
+    const rootMount = [{ pathPrefix: "", urlPrefix: "/" }];
+    expect(toLocalizedDocsUrlPath("index.md", "en", i18n, rootMount)).toBe("/");
+    expect(toLocalizedDocsUrlPath("index.md", "zh", i18n, rootMount)).toBe("/zh");
+    expect(toLocalizedDocsUrlPath("quickstart.mdx", "en", i18n, rootMount)).toBe(
+      "/quickstart"
+    );
+    expect(toLocalizedDocsUrlPath("quickstart.mdx", "zh", i18n, rootMount)).toBe(
+      "/zh/quickstart"
+    );
+    expect(toLocalizedMarkdownUrlPath("index.md", "en", i18n, rootMount)).toBe(
+      "/index.md"
+    );
+    expect(toLocalizedMarkdownUrlPath("index.md", "zh", i18n, rootMount)).toBe(
+      "/zh/index.md"
+    );
+    expect(
+      toLocalizedMarkdownUrlPath("quickstart.mdx", "en", i18n, rootMount)
+    ).toBe("/quickstart.md");
+    expect(
+      toLocalizedMarkdownUrlPath("quickstart.mdx", "zh", i18n, rootMount)
+    ).toBe("/zh/quickstart.md");
+    expect(getDocsLocaleUrlPrefix("en", i18n, "/")).toBe("/");
+    expect(getDocsLocaleUrlPrefix("zh", i18n, "/")).toBe("/zh");
+    expect(resolveDocsLocale("/", i18n, "/")).toBe("en");
+    expect(resolveDocsLocale("/zh", i18n, "/")).toBe("zh");
+    expect(resolveDocsLocale("/zh/quickstart", i18n, "/")).toBe("zh");
+    expect(stripLocaleFromDocsPath("/zh", i18n, "/")).toBe("/");
+    expect(stripLocaleFromDocsPath("/zh/quickstart", i18n, "/")).toBe(
+      "/quickstart"
+    );
+  });
+
   it("exposes locale prefix helpers", () => {
     expect(isDefaultLocale("en", i18n)).toBe(true);
     expect(isDefaultLocale("zh", i18n)).toBe(false);
