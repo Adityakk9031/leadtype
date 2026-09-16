@@ -541,7 +541,7 @@ function splitWithOverlap(
 
 function collectSectionBlocks(content: string): SectionBlock[] {
   const blocks: SectionBlock[] = [];
-  const headingPath: string[] = [];
+  const headingStack: { level: number; title: string }[] = [];
   const textLines: string[] = [];
   const codeLines: string[] = [];
   // Count every heading, including headings that produce no search chunk, so
@@ -569,9 +569,14 @@ function collectSectionBlocks(content: string): SectionBlock[] {
   };
 
   const consumeHeading = (title: string, level: number): void => {
-    headingPath.length = level - 1;
-    headingPath.push(title);
-    currentHeadingPath = [...headingPath];
+    while (
+      headingStack.length > 0 &&
+      (headingStack[headingStack.length - 1]?.level ?? 0) >= level
+    ) {
+      headingStack.pop();
+    }
+    headingStack.push({ level, title });
+    currentHeadingPath = headingStack.map((entry) => entry.title);
     currentAnchor = slugger.slug(title);
   };
 
@@ -883,8 +888,8 @@ function findDocumentIndex(index: DocsSearchIndex, pathOrId: string): number {
   );
 }
 
-function pathSegments(input: string): string[] {
-  return input.replaceAll("\\", "/").split("/").filter(Boolean);
+function pathSegments(input?: string): string[] {
+  return (input ?? "").replaceAll("\\", "/").split("/").filter(Boolean);
 }
 
 function isSharedRoutePath(input: string): boolean {
