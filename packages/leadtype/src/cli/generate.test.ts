@@ -189,4 +189,25 @@ describe("generate resolves through the shared project pipeline", () => {
     // other consumer — authored source names included.
     expect(result.sources).toEqual(project.sources);
   });
+
+  it("supports mounting a source directory at the root urlPrefix", async () => {
+    const dir = await fixture({
+      "docs/index.mdx": page("Home"),
+      "docs/quickstart.mdx": page("Quickstart"),
+      "leadtype.config.ts": `import { defineDocsConfig } from ${JSON.stringify(LEADTYPE_ENTRY)};
+export default defineDocsConfig({
+  ${IDENTITY},
+  mounts: [{ pathPrefix: "", urlPrefix: "/" }],
+});`,
+    });
+    const outDir = path.join(dir, "out");
+    const capture = createCapture();
+
+    const code = await runGenerateCommand(
+      ["--src", dir, "--out", outDir],
+      capture.io
+    );
+
+    expect(code).toBe(0);
+  });
 });

@@ -1078,8 +1078,9 @@ async function copyMountedMarkdownMirrors(
       }
       const targetDir = outputDirForUrlPrefix(outDir, urlPrefix);
       const relativeToOut = path.relative(outDir, targetDir);
+      const isRootMount = urlPrefix === "/" && relativeToOut === "";
       if (
-        !relativeToOut ||
+        !(isRootMount || relativeToOut) ||
         relativeToOut.startsWith("..") ||
         path.isAbsolute(relativeToOut)
       ) {
@@ -1120,6 +1121,7 @@ async function copyMountedMarkdownMirrors(
       const mirroredFiles = await fg("**/*.md", {
         absolute: false,
         cwd: targetDir,
+        ignore: targetDir === outDir ? [`${DEFAULT_DOCS_DIR}/**`] : [],
         onlyFiles: true,
       });
       const staleFiles = mirroredFiles.filter(

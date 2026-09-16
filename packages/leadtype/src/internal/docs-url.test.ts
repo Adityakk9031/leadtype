@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  matchesUrlPrefix,
   normalizeDocsUrl,
   stripDocsExtension,
   stripTrailingSlashes,
@@ -52,5 +53,18 @@ describe("docs URL helpers", () => {
     expect(toAbsoluteUrl("https://example.com/x", "https://leadtype.dev")).toBe(
       "https://example.com/x"
     );
+  });
+
+  it("matches URL prefixes including root mounts", () => {
+    expect(matchesUrlPrefix("/quickstart", "/")).toBe(true);
+    expect(matchesUrlPrefix("/docs/quickstart", "/")).toBe(true);
+    expect(matchesUrlPrefix("/", "/")).toBe(true);
+    expect(matchesUrlPrefix("//bad", "/")).toBe(false);
+    expect(matchesUrlPrefix("quickstart", "/")).toBe(false);
+
+    expect(matchesUrlPrefix("/docs", "/docs")).toBe(true);
+    expect(matchesUrlPrefix("/docs/quickstart", "/docs")).toBe(true);
+    expect(matchesUrlPrefix("/doc", "/docs")).toBe(false);
+    expect(matchesUrlPrefix("/docs-other", "/docs")).toBe(false);
   });
 });
