@@ -1985,7 +1985,19 @@ async function executeGenerate(
       if (i18n) {
         await copyDefaultLocaleMarkdownAliases(outDir, i18n.defaultLocale);
       }
-      await copyMountedMarkdownMirrors(outDir, effectiveMounts);
+      const sourceFiles = await fg("**/*.mdx", {
+        cwd: sourceMirror.docsDir,
+        onlyFiles: true,
+      });
+      const defaultLocalePrefix = i18n ? `${i18n.defaultLocale}/` : undefined;
+      const markdownFiles = sourceFiles.map((file) => {
+        const markdownPath = normalizeDocsPath(file).slice(0, -1);
+        return defaultLocalePrefix &&
+          markdownPath.startsWith(defaultLocalePrefix)
+          ? markdownPath.slice(defaultLocalePrefix.length)
+          : markdownPath;
+      });
+      await copyMountedMarkdownMirrors(outDir, effectiveMounts, markdownFiles);
       const i18nManifestPath = await writeI18nManifest(outDir, i18nManifest);
       const mcpConfig = metadata.agents?.mcp;
       const mcpEnabled = mcpConfig?.enabled === true;

@@ -1,9 +1,8 @@
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { lstat, mkdir, readFile, rm, rmdir } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { homedir } from "node:os";
 import path from "node:path";
-import { glob } from "tinyglobby";
 import { copyFileAtomic, writeFileAtomic } from "./atomic-fs";
 import {
   type DocsPathMount,
@@ -124,13 +123,14 @@ async function removeEmptyParents(
 
 /**
  * The caller holds the output directory's generate lock. Ownership records
- * live in the temporary cache so a read-only source tree can still generate.
+ * live in a per-user cache so a read-only source tree can still generate.
  * If the cache is cleared, untracked mirrors are preserved rather than guessed.
  */
 export async function copyMountedMarkdownMirrors(
   outputDir: string,
   mounts: DocsPathMount[],
-  stateDir = path.join(tmpdir(), "leadtype-mounted-markdown")
+  sourceFiles: readonly string[],
+  stateDir = path.join(homedir(), ".cache", "leadtype", "mounted-markdown")
 ): Promise<void> {
   const outDir = path.resolve(outputDir);
   const statePath = path.join(
@@ -139,15 +139,10 @@ export async function copyMountedMarkdownMirrors(
   );
   const previous = await readOwnedFiles(statePath, outDir);
   const copies = new Map<string, string>();
+  // Only current source pages are canonical. Output globs can include mirrors
+  // from earlier runs, even after ownership records have been cleared.
   const canonicalFiles = new Set(
-    (
-      await glob("**/*.md", {
-        cwd: path.join(outDir, DOCS_DIR),
-        onlyFiles: true,
-      })
-    )
-      .map((file) => `${DOCS_DIR}/${normalizeDocsPath(file)}`)
-      .filter((file) => !previous.has(file))
+    sourceFiles.map((file) => `${DOCS_DIR}/${normalizeDocsPath(file)}`)
   );
 
   // Plan every mount before writing or pruning. A root mount must not sweep
@@ -163,30 +158,24 @@ export async function copyMountedMarkdownMirrors(
       continue;
     }
     const targetDir = path.join(outDir, urlPrefix.slice(1));
-    const targetRelativeToSource = path.relative(sourceDir, targetDir);
-    const targetInsideSource =
-      targetRelativeToSource.length > 0 &&
-      !targetRelativeToSource.startsWith("..") &&
-      !path.isAbsolute(targetRelativeToSource);
-    const files = await glob("**/*.md", {
-      cwd: sourceDir,
-      ignore: targetInsideSource
-        ? [`${normalizeDocsPath(targetRelativeToSource)}/**`]
-        : [],
-      onlyFiles: true,
-    });
-    for (const file of files) {
+    for (const canonicalPath of canonicalFiles) {
+      const source = outputPath(outDir, canonicalPath);
+      const file = path.relative(sourceDir, source);
+      if (
+        !file ||
+        file.startsWith("..") ||
+        path.isAbsolute(file) ||
+        !existsSync(source)
+      ) {
+        continue;
+      }
       const target = path.join(targetDir, file);
       const relativePath = normalizeDocsPath(path.relative(outDir, target));
       outputPath(outDir, relativePath);
-      const source = path.join(sourceDir, file);
       if (canonicalFiles.has(relativePath) && source !== target) {
         throw new Error(
           `Mounted markdown "${relativePath}" would overwrite primary docs.`
         );
-      }
-      if (previous.has(normalizeDocsPath(path.relative(outDir, source)))) {
-        continue;
       }
       const existing = copies.get(relativePath);
       if (existing && existing !== source) {
@@ -223,7 +212,7 @@ export async function copyMountedMarkdownMirrors(
   if (current.size === 0 && previous.size === 0) {
     return;
   }
-  await mkdir(stateDir, { recursive: true });
+  await mkdir(stateDir, { recursive: true, mode: 0o700 });
   await writeFileAtomic(
     statePath,
     `${JSON.stringify({ version: 1, outDir, files: [...current] })}\n`
