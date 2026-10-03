@@ -2,4 +2,4 @@
 "leadtype": patch
 ---
 
-Fix root mount (urlPrefix: "/") handling in leadtype generate and matchesUrlPrefix. copyMountedMarkdownMirrors now allows root-mounted mirrors without erroneously throwing output directory escape errors, preserves the primary docs directory during root-mirror pruning, and correctly matches root-prefixed URLs.
+Support root-mounted Markdown mirrors without deleting primary docs, other mounts, or unrelated Markdown files in the output directory. Track generated mirrors outside the published directory and prune only previously generated files whose content is unchanged. Files left by older releases without ownership records are preserved.

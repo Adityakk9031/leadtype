@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -180,7 +180,7 @@ describe("generate resolves through the shared project pipeline", () => {
       capture.io
     );
 
-    expect(code).toBe(0);
+    expect(code, capture.stderr()).toBe(0);
     const result = JSON.parse(capture.stdout()) as {
       sources?: unknown;
     };
@@ -208,6 +208,12 @@ export default defineDocsConfig({
       capture.io
     );
 
-    expect(code).toBe(0);
+    expect(code, capture.stderr()).toBe(0);
+    expect(await readFile(path.join(outDir, "index.md"), "utf8")).toContain(
+      "Home"
+    );
+    expect(
+      await readFile(path.join(outDir, "docs/index.md"), "utf8")
+    ).toContain("Home");
   });
 });
