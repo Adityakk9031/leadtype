@@ -9,6 +9,7 @@ import {
   normalizeDocsPath,
   normalizeUrlPrefix,
 } from "./docs-url";
+import { logger } from "./logger";
 
 const DOCS_DIR = "docs";
 const SHA256_PATTERN = /^[a-f0-9]{64}$/;
@@ -28,6 +29,19 @@ function outputPath(outDir: string, relativePath: string): string {
   return target;
 }
 
+function warnStateFailure(action: "read" | "write", error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
+  logger.warn({
+    human: {
+      message: `Could not ${action} mounted Markdown ownership state: ${message}`,
+    },
+    json: {
+      event: `generate.mounted_markdown_state_${action}_failed`,
+      fields: { message },
+    },
+  });
+}
+
 async function readOwnedFiles(
   statePath: string,
   outDir: string
@@ -42,7 +56,8 @@ async function readOwnedFiles(
     ) {
       return new Map();
     }
-    throw error;
+    warnStateFailure("read", error);
+    return new Map();
   }
   if (
     !value ||
@@ -130,8 +145,15 @@ export async function copyMountedMarkdownMirrors(
   outputDir: string,
   mounts: DocsPathMount[],
   sourceFiles: readonly string[],
-  stateDir = path.join(homedir(), ".cache", "leadtype", "mounted-markdown")
+  options: { stateDir?: string; prune?: boolean } = {}
 ): Promise<void> {
+  const stateDir =
+    options.stateDir ??
+    path.join(
+      process.env.XDG_CACHE_HOME || path.join(homedir(), ".cache"),
+      "leadtype",
+      "mounted-markdown"
+    );
   const outDir = path.resolve(outputDir);
   const statePath = path.join(
     stateDir,
@@ -187,7 +209,11 @@ export async function copyMountedMarkdownMirrors(
     }
   }
 
-  const current = new Map<string, string>();
+  // A filtered run does not own the excluded pages. Keep their records so a
+  // later full run can still prune them if the sources really disappear.
+  const current = new Map<string, string>(
+    options.prune === false ? previous : undefined
+  );
   for (const [relativePath, source] of copies) {
     const target = outputPath(outDir, relativePath);
     await mkdir(path.dirname(target), { recursive: true });
@@ -212,9 +238,13 @@ export async function copyMountedMarkdownMirrors(
   if (current.size === 0 && previous.size === 0) {
     return;
   }
-  await mkdir(stateDir, { recursive: true, mode: 0o700 });
-  await writeFileAtomic(
-    statePath,
-    `${JSON.stringify({ version: 1, outDir, files: [...current] })}\n`
-  );
+  try {
+    await mkdir(stateDir, { recursive: true, mode: 0o700 });
+    await writeFileAtomic(
+      statePath,
+      `${JSON.stringify({ version: 1, outDir, files: [...current] })}\n`
+    );
+  } catch (error) {
+    warnStateFailure("write", error);
+  }
 }

@@ -1997,7 +1997,9 @@ async function executeGenerate(
           ? markdownPath.slice(defaultLocalePrefix.length)
           : markdownPath;
       });
-      await copyMountedMarkdownMirrors(outDir, effectiveMounts, markdownFiles);
+      await copyMountedMarkdownMirrors(outDir, effectiveMounts, markdownFiles, {
+        prune: !hasExplicitPathFilters,
+      });
       const i18nManifestPath = await writeI18nManifest(outDir, i18nManifest);
       const mcpConfig = metadata.agents?.mcp;
       const mcpEnabled = mcpConfig?.enabled === true;
