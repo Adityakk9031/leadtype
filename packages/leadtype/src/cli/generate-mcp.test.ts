@@ -256,11 +256,9 @@ describe("generate --bundle with mounts", () => {
       join(root, "docs", "docs.config.ts"),
       [
         "export default {",
-        "  mounts: [{ pathPrefix: '', urlPrefix: '/changelog' }],",
         "  product: {",
         '    name: "ChangelogPkg",',
         '    tagline: "Changelog package.",',
-        "    bestStartingPoints: [{ urlPath: '/changelog' }],",
         "  },",
         "};",
       ].join("\n")
@@ -280,7 +278,15 @@ describe("generate --bundle with mounts", () => {
     );
 
     exitCode = await runGenerateCommand(
-      ["--bundle", "--src", root, "--docs-dir", "docs", "--out", outDir],
+      [
+        "--bundle",
+        "--src",
+        root,
+        "--docs-dir",
+        "docs=/changelog",
+        "--out",
+        outDir,
+      ],
       silentIo
     );
   });
