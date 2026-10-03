@@ -41,14 +41,6 @@ export const LEADTYPE_CONFIG_FILENAMES = [
   "leadtype.config.cjs",
 ] as const;
 
-const SOURCE_CONFIG_INHERIT_FIELDS = new Set<SourceConfigInheritField>([
-  "navigation",
-  "groups",
-  "frontmatterSchema",
-  "flatteners",
-  "mounts",
-]);
-
 const DEFAULT_SOURCE_CONFIG_INHERIT: SourceConfigInheritField[] = [
   "navigation",
   "groups",
@@ -56,6 +48,10 @@ const DEFAULT_SOURCE_CONFIG_INHERIT: SourceConfigInheritField[] = [
   "flatteners",
   "mounts",
 ];
+
+const SOURCE_CONFIG_INHERIT_FIELDS = new Set<SourceConfigInheritField>(
+  DEFAULT_SOURCE_CONFIG_INHERIT
+);
 
 const NAV_SORT_VALUES = new Set(["order", "path", "title"]);
 

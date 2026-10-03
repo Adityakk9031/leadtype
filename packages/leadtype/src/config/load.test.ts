@@ -581,7 +581,9 @@ describe("agents.nlweb.openapi config validation", () => {
       )
     ).not.toThrow();
   });
+});
 
+describe("collection inheritConfig validation", () => {
   it("accepts valid collection inheritConfig fields including mounts and rejects invalid ones", () => {
     expect(() =>
       validateDocsConfig(
